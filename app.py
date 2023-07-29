@@ -19,18 +19,14 @@ def remove_node():
         
     
 def update_code():
-    st.session_state['code'] = '''
-                               flowchart
-                               '''
+    st.session_state['code'] = 'flowchart'
     if len(st.session_state['nodes'].items()) > 0:
         for node_id, node_title in st.session_state['nodes'].items():
             st.session_state['code']+=f'\n{node_id}[{node_title}]'
             
 if __name__ == '__main__':
     if 'code' not in st.session_state:
-        st.session_state['code'] = '''
-                                   flowchart
-                                   '''
+        st.session_state['code'] = ''
     if 'nodes' not in st.session_state:
         st.session_state['nodes'] = {}
     
@@ -41,12 +37,12 @@ if __name__ == '__main__':
         st.session_state['subgraphs'] = {}
         
     st.set_page_config(layout='wide')
-    st.title('Mermaid flow chart editor')
-    st.write('Help you create Mermaid flow charts in a more manageable and efficient way.')
     col_config, col_display, col_code = st.columns([2,3,2])
     with col_config:
+        st.header('Mermaid flow chart editor')
+        st.write('Help you create Mermaid flow charts in a more manageable and efficient way.')
         st.subheader('Node')
-        col_node_title, col_node_shape = st.columns([3,1])
+        col_node_title, col_node_shape = st.columns([3,1.5])
         col_node_title.text_input('Title', placeholder='Don\'t repeat node title!', on_change=add_node, key='node_title')
         col_node_shape.selectbox('Shape', options=['square', 'round', 'container'])
         st.button('add a new node', on_click=add_node, use_container_width=True)
