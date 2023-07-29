@@ -3,16 +3,23 @@ from streamlit_mermaid import st_mermaid
 
 def add_node():
     if st.session_state['node_title'].replace(' ', '') != '':
-        st.session_state['nodes'][st.session_state['node_title'].replace(' ', '_')] = st.session_state['node_title']
-        st.toast('Node added successfully', icon='🔥')
-        st.session_state['node_title'] = ''
-        update_code()
+        if st.session_state['node_title'].replace(' ', '') not in st.session_state['nodes'].values():
+            st.session_state['nodes'][st.session_state['node_title'].replace(' ', '_')] = st.session_state['node_title']
+            st.session_state['shapes'][st.session_state['node_title']] = st.session_state['node_shape']
+            st.session_state['node_title'] = ''
+            st.toast('Node added successfully', icon='🔥')
+            update_code()
+        else:
+            st.toast('Node is already exited.', icon='🚨')
+
     else:
         st.toast('Node title is invalid.', icon='🚨')
     
 def remove_node():
     if len(st.session_state['nodes'].items()) > 0:
         del st.session_state['nodes'][st.session_state['node_remove_selected'].replace(' ', '_')]
+        del st.session_state['shapes'][st.session_state['node_remove_selected']]
+
         st.toast('Node removed successfully', icon='🔥')
         update_code()
     else:
@@ -48,22 +55,38 @@ def ungroup_nodes():
     update_code()
 
 def update_code():
-    st.session_state['code'] = 'flowchart'
-    # update group
-    for group, nodes in st.session_state['groups'].items():
-        st.session_state['code'] += f'\nsubgraph {group}'
-        for node in nodes:
-            st.session_state['code'] += f"\n{node.replace(' ', '_')}[{node}]"
-        st.session_state['code'] += '\nend'
+    st.session_state['code'] = '''
+                               flowchart
+                               '''
 
-    # update nodes
-    for node_id, node_title in st.session_state['nodes'].items():
-        st.session_state['code'] += f'\n{node_id}[{node_title}]'
-    # update edges
-    for node_a, node_bs in st.session_state['edges'].items():
-        for node_b in node_bs:
-            st.session_state['code'] += f'\n{node_a}-->{node_b}'
-    
+    if len(st.session_state['nodes'].items()) > 0:
+        st.session_state['code'] = 'flowchart'
+        # update group
+        for group, titles in st.session_state['groups'].items():
+            st.session_state['code'] += f'\nsubgraph {group}'
+            for title in titles:
+                if st.session_state['shapes'][title] == 'square':
+                    st.session_state['code'] += f"\n{title.replace(' ', '_')}[{title}]"
+                if st.session_state['shapes'][title] == 'ellipse':
+                    st.session_state['code'] += f"\n{title.replace(' ', '_')}([{title}])"
+                if st.session_state['shapes'][title] == 'container':
+                    st.session_state['code'] += f"\n{title.replace(' ', '_')}[({title})]"
+            st.session_state['code'] += '\nend'
+
+        # update nodes
+        for node_id, node_title in st.session_state['nodes'].items():
+                if st.session_state['shapes'][node_title] == 'square':
+                    st.session_state['code'] += f"\n{node_title.replace(' ', '_')}[{node_title}]"
+                if st.session_state['shapes'][node_title] == 'ellipse':
+                    st.session_state['code'] += f"\n{node_title.replace(' ', '_')}([{node_title}])"
+                if st.session_state['shapes'][node_title] == 'container':
+                    st.session_state['code'] += f"\n{node_title.replace(' ', '_')}[({node_title})]"
+            
+        # update edges
+        for node_a, node_bs in st.session_state['edges'].items():
+            for node_b in node_bs:
+                st.session_state['code'] += f'\n{node_a}-->{node_b}'
+        
             
 if __name__ == '__main__':
     # init session state
@@ -71,12 +94,12 @@ if __name__ == '__main__':
         st.session_state['code'] = ''
     if 'nodes' not in st.session_state:
         st.session_state['nodes'] = {}
-    
     if 'edges' not in st.session_state:
         st.session_state['edges'] = {}
-            
     if 'groups' not in st.session_state:
         st.session_state['groups'] = {}
+    if 'shapes' not in st.session_state:
+        st.session_state['shapes'] = {}
         
     st.set_page_config(layout='wide')
     st.title('Mermaid flow chart editor')
@@ -90,8 +113,8 @@ if __name__ == '__main__':
         with tab_node:
             # node - add
             col_node_title, col_node_shape = st.columns([3,1])
-            col_node_title.text_input(label='Node title', on_change=add_node, key='node_title')
-            col_node_shape.selectbox('Node shape', options=['square', 'ellipse', 'container'])
+            col_node_title.text_input(label='Node title', key='node_title')
+            col_node_shape.selectbox('Node shape', options=['square', 'ellipse', 'container'], key='node_shape')
             st.button('add a new node', on_click=add_node, use_container_width=True)
             # node - remove
             st.selectbox('Select a node to remove', list(st.session_state['nodes'].values())[::-1], key='node_remove_selected')
@@ -104,7 +127,7 @@ if __name__ == '__main__':
             col_node_b.selectbox('B (node/group)', options=st.session_state['nodes'], key='node_b')
             st.button('add an edge from A to B', use_container_width=True, on_click=add_edge)
             # edge - remove
-            st.selectbox('Select an edge to remove', st.session_state['edges'].items())
+            st.selectbox('Select an edge to remove', st.session_state['edges'].items(), placeholder=' ')
             st.button('remove an existing edge', use_container_width=True, on_click=remove_edge)
             
         with tab_group:
@@ -134,3 +157,4 @@ if __name__ == '__main__':
         st.write(st.session_state['nodes'])
         st.write(st.session_state['edges'])
         st.write(st.session_state['groups'])
+        st.write(st.session_state['shapes'])
