@@ -19,14 +19,23 @@ def remove_node():
         
 def add_edge():
     if st.session_state['node_a'] in st.session_state['edges'].keys():
-        st.session_state['edges'][st.session_state['node_a']].append(st.session_state['node_b'])
+        st.session_state['edges'][st.session_state['node_a']].add(st.session_state['node_b'])
     else:
         st.session_state['edges'][st.session_state['node_a']] = {st.session_state['node_b']}
-
+    print(st.session_state['edges'])
     update_code()
     
 def remove_edge():
-    pass
+    if st.session_state['node_a'] in st.session_state['edges'].keys():
+        if st.session_state['node_b'] in st.session_state['edges'][st.session_state['node_a']]:
+            st.session_state['edges'][st.session_state['node_a']].remove(st.session_state['node_b'])
+            if not st.session_state['edges'][st.session_state['node_a']]:
+                del st.session_state['edges'][st.session_state['node_a']]
+            update_code()
+        else:
+            st.error('The edge doesn\'t exist')  
+    else:
+        st.error('The edge doesn\'t exist')
         
     
 def update_code():
@@ -47,7 +56,7 @@ if __name__ == '__main__':
     if 'nodes' not in st.session_state:
         st.session_state['nodes'] = {}
     
-    if 'edge' not in st.session_state:
+    if 'edges' not in st.session_state:
         st.session_state['edges'] = {}
             
     if 'subgraphs' not in st.session_state:
@@ -57,7 +66,7 @@ if __name__ == '__main__':
     col_config, col_display, col_code = st.columns([2.5,3,2])
     with col_config:
         st.header('Mermaid flow chart editor')
-        st.write('Help you create Mermaid flow charts in a more manageable and efficient way.')
+        st.write('Create Mermaid flow charts in a more manageable and efficient way.')
         st.subheader('Node')
         col_node_title, col_node_shape, col_node_add = st.columns([3,1.5, 1.5])
         col_node_title.text_input(label='', placeholder='node title', label_visibility='collapsed', on_change=add_node, key='node_title')
@@ -75,13 +84,18 @@ if __name__ == '__main__':
         
         col_edge_add, col_edge_remove = st.columns(2)
         col_edge_add.button('add an edge', use_container_width=True, on_click=add_edge)
-        col_edge_remove.button('remove an edge', use_container_width=True, on_click=add_edge)
+        col_edge_remove.button('remove an edge', use_container_width=True, on_click=remove_edge)
         
         st.subheader('Group')
-        st.multiselect('All nodes added', options=st.session_state['nodes'])
+        col_group_selected, col_group_create = st.columns([4.5,1.5])        
+        col_group_selected.multiselect('All nodes added', options=st.session_state['nodes'], label_visibility='collapsed')
+        col_group_create.button('group', use_container_width=True)
         
     with col_display:
-        st_mermaid(st.session_state['code'], height=500)
+        if st.session_state['code'] != '':
+            st_mermaid(st.session_state['code'], height=500)
 
     with col_code:
         st.code(st.session_state['code'], language='mermaid', line_numbers=True)
+    st.write(st.session_state['nodes'])
+    st.write(st.session_state['edges'])
