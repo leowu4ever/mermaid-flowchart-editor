@@ -2,17 +2,21 @@ import streamlit as st
 from streamlit_mermaid import st_mermaid
 
 def add_node():
-    st.session_state['nodes'][st.session_state['node_title'].replace(' ', '_')] = st.session_state['node_title']
-    st.session_state['node_title'] = ''
-    st.snow()
-    update_code()
+    if st.session_state['node_title'].replace(' ', '') != '':
+        st.session_state['nodes'][st.session_state['node_title'].replace(' ', '_')] = st.session_state['node_title']
+        st.session_state['node_title'] = ''
+        st.balloons()
+        update_code()
+    else:
+        st.error('Node title is invalid.')
     
 def remove_node():
     if len(st.session_state['nodes'].items()) > 0:    
         del st.session_state['nodes'][st.session_state['node_remove_selected'].replace(' ', '_')]
         update_code()
     else:
-        st.toast('no node is selected')
+        st.error('No node is selected')
+        
     
 def update_code():
     st.session_state['code'] = '''
@@ -51,11 +55,12 @@ if __name__ == '__main__':
 
         st.subheader('Edge')
         col_node_a, col_node_b = st.columns(2)
-        col_node_a.selectbox('Node A', [])
-        col_node_b.selectbox('Node B', [])
-        st.button('Add an edge from node A to node B    ', use_container_width=True) 
-        st.subheader('Group')
+        col_node_a.selectbox('Node A', options=st.session_state['nodes'])
+        col_node_b.selectbox('Node B', options=st.session_state['nodes'])
+        st.button('Add an edge from node A to node B    ', use_container_width=True)
         
+        st.subheader('Group')
+        st.multiselect('All nodes added', options=st.session_state['nodes'])
         
     with col_display:
         st_mermaid(st.session_state['code'], height=500)
