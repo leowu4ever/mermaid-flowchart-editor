@@ -4,17 +4,19 @@ from streamlit_mermaid import st_mermaid
 def add_node():
     if st.session_state['node_title'].replace(' ', '') != '':
         st.session_state['nodes'][st.session_state['node_title'].replace(' ', '_')] = st.session_state['node_title']
+        st.toast('Node added successfully', icon='🔥')
         st.session_state['node_title'] = ''
         update_code()
     else:
-        st.toast('Node title is invalid.')
+        st.toast('Node title is invalid.', icon='🚨')
     
 def remove_node():
     if len(st.session_state['nodes'].items()) > 0:
         del st.session_state['nodes'][st.session_state['node_remove_selected'].replace(' ', '_')]
+        st.toast('Node removed successfully', icon='🔥')
         update_code()
     else:
-        st.error('No node is selected.')
+        st.toast('No node is selected.', icon='🚨')
         
 def add_edge():
     if st.session_state['node_a'] in st.session_state['edges'].keys():
@@ -88,8 +90,8 @@ if __name__ == '__main__':
         with tab_node:
             # node - add
             col_node_title, col_node_shape = st.columns([3,1])
-            col_node_title.text_input(label='Title', on_change=add_node, key='node_title')
-            col_node_shape.selectbox('Shape', options=['square', 'ellipse', 'container'])
+            col_node_title.text_input(label='Node title', on_change=add_node, key='node_title')
+            col_node_shape.selectbox('Node shape', options=['square', 'ellipse', 'container'])
             st.button('add a new node', on_click=add_node, use_container_width=True)
             # node - remove
             st.selectbox('Select a node to remove', list(st.session_state['nodes'].values())[::-1], key='node_remove_selected')
