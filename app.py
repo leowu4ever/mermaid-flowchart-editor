@@ -80,43 +80,48 @@ if __name__ == '__main__':
     st.title('Mermaid flow chart editor')
     st.write('Create Mermaid flow charts in a more manageable and efficient way.')
         
-    col_config, col_display, col_code = st.columns([2.5,3,2])
+    col_config, col_display, col_code = st.columns([2,3,2])
     with col_config:
-        # config
-        st.subheader('Config')
-        col_direction, col_theme = st.columns(2)
-        col_direction.selectbox('Chart direction', ['From left to right', 'from top to bottom'])
-        col_theme.selectbox('Chart theme', ['base', 'forest', 'dark'])
         
-        # node - add
-        st.subheader('Node')
-        col_node_title, col_node_shape = st.columns([3,1])
-        col_node_title.text_input(label='Title', on_change=add_node, key='node_title')
-        col_node_shape.selectbox('Shape', options=['square', 'ellipse', 'container'])
-        st.button('add a new node', on_click=add_node, use_container_width=True)
-        # node - remove
-        st.selectbox('Select a node to remove', list(st.session_state['nodes'].values())[::-1], key='node_remove_selected')
-        st.button('remove an existing node', on_click=remove_node, use_container_width=True)
+        tab_node, tab_edge, tab_group, tab_config = st.tabs(['Node', 'Edge', 'Group', 'Configuration'])
 
-        # edge - add
-        st.subheader('Edge')
-        col_node_a, col_node_b = st.columns(2)
-        col_node_a.selectbox('Node/group A', options=st.session_state['nodes'], key='node_a')
-        col_node_b.selectbox('Node/group B', options=st.session_state['nodes'], key='node_b')
-        st.button('add an edge', use_container_width=True, on_click=add_edge)
-        # edge - remove
-        st.selectbox('Select an edge to remove', st.session_state['edges'].items())
-        st.button('remove an existing edge', use_container_width=True, on_click=remove_edge)
+        with tab_node:
+            # node - add
+            col_node_title, col_node_shape = st.columns([3,1])
+            col_node_title.text_input(label='Title', on_change=add_node, key='node_title')
+            col_node_shape.selectbox('Shape', options=['square', 'ellipse', 'container'])
+            st.button('add a new node', on_click=add_node, use_container_width=True)
+            # node - remove
+            st.selectbox('Select a node to remove', list(st.session_state['nodes'].values())[::-1], key='node_remove_selected')
+            st.button('remove an existing node', on_click=remove_node, use_container_width=True)
+
+        with tab_edge:
+            # edge - add
+            col_node_a, col_node_b = st.columns(2)
+            col_node_a.selectbox('A (node/group)', options=st.session_state['nodes'], key='node_a')
+            col_node_b.selectbox('B (node/group)', options=st.session_state['nodes'], key='node_b')
+            st.button('add an edge from A to B', use_container_width=True, on_click=add_edge)
+            # edge - remove
+            st.selectbox('Select an edge to remove', st.session_state['edges'].items())
+            st.button('remove an existing edge', use_container_width=True, on_click=remove_edge)
+            
+        with tab_group:
+            # group - add
+            st.multiselect('Select one/multiple node(s) to group', options=st.session_state['nodes'], key='group_nodes')
+            col_group_name, col_group_direction = st.columns([1,1])
+            col_group_name.text_input('Group name', key='group_name')
+            col_group_direction.selectbox('Group direction', ['From left to right', 'from top to bottom'])
+            st.button('group', use_container_width=True, on_click=group_nodes)
+            # group - remove
+            st.selectbox('Select a group to ungroup', st.session_state['groups'].keys(), key='group_selected')
+            st.button('ungroup an existing group', use_container_width=True, on_click=ungroup_nodes)
+            
+        with tab_config:
+            # config
+            col_direction, col_theme = st.columns(2)
+            col_direction.selectbox('Chart direction', ['From left to right', 'from top to bottom'])
+            col_theme.selectbox('Chart theme', ['base', 'forest', 'dark'])
         
-        # group - add
-        st.subheader('Group')
-        st.multiselect('Select one/multiple node(s) to group', options=st.session_state['nodes'], key='group_nodes')
-        col_group_name, col_group_create = st.columns([1,1])
-        col_group_name.text_input('group name', label_visibility='collapsed', placeholder='group name', key='group_name')
-        col_group_create.button('group', use_container_width=True, on_click=group_nodes)
-        # group - remove
-        st.selectbox('Select a group to ungroup', st.session_state['groups'].keys(), key='group_selected')
-        st.button('ungroup an existing group', use_container_width=True, on_click=ungroup_nodes)
         
     with col_display:
         if st.session_state['code'] != '':
@@ -124,6 +129,6 @@ if __name__ == '__main__':
 
     with col_code:
         st.code(st.session_state['code'], language='mermaid', line_numbers=True)
-    st.write(st.session_state['nodes'])
-    st.write(st.session_state['edges'])
-    st.write(st.session_state['groups'])
+        st.write(st.session_state['nodes'])
+        st.write(st.session_state['edges'])
+        st.write(st.session_state['groups'])
