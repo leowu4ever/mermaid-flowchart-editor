@@ -7,7 +7,7 @@ def add_node():
         st.session_state['node_title'] = ''
         update_code()
     else:
-        st.error('Node title is invalid.')
+        st.toast('Node title is invalid.')
     
 def remove_node():
     if len(st.session_state['nodes'].items()) > 0:
@@ -38,22 +38,29 @@ def remove_edge():
         
 def group_nodes():
     st.session_state['groups'][st.session_state['group_name']] = set(st.session_state['group_nodes'])
-
+    update_code()
+    
 def ungroup_nodes():
     if st.session_state['group_selected'] in st.session_state['groups'].keys():
         del st.session_state['groups'][st.session_state['group_selected']]
-    
+    update_code()
+
 def update_code():
     st.session_state['code'] = 'flowchart'
+    # update group
+    for group, nodes in st.session_state['groups'].items():
+        st.session_state['code'] += f'\nsubgraph {group}'
+        for node in nodes:
+            st.session_state['code'] += f"\n{node.replace(' ', '_')}[{node}]"
+        st.session_state['code'] += '\nend'
+
     # update nodes
-    if len(st.session_state['nodes'].items()) > 0:
-        for node_id, node_title in st.session_state['nodes'].items():
-            st.session_state['code'] += f'\n{node_id}[{node_title}]'
+    for node_id, node_title in st.session_state['nodes'].items():
+        st.session_state['code'] += f'\n{node_id}[{node_title}]'
     # update edges
-    if len(st.session_state['edges'].items()) > 0:
-        for node_a, node_bs in st.session_state['edges'].items():
-            for node_b in node_bs:
-                st.session_state['code'] += f'\n{node_a}-->{node_b}'
+    for node_a, node_bs in st.session_state['edges'].items():
+        for node_b in node_bs:
+            st.session_state['code'] += f'\n{node_a}-->{node_b}'
     
             
 if __name__ == '__main__':
@@ -74,10 +81,14 @@ if __name__ == '__main__':
         
     col_config, col_display, col_code = st.columns([2.5,3,2])
     with col_config:
+        st.subheader('Config')
+        col_direction, col_theme = st.columns(2)
+        col_direction.selectbox('Chart direction', ['From left to right', 'from top to bottom'])
+        col_theme.selectbox('Chart theme', ['base', 'forest', 'dark'])
         st.subheader('Node')
         col_node_title, col_node_shape, col_node_add = st.columns([3,1.5, 1.5])
         col_node_title.text_input(label='', placeholder='node title', label_visibility='collapsed', on_change=add_node, key='node_title')
-        col_node_shape.selectbox('Shape', label_visibility='collapsed', options=['square', 'round', 'container'])
+        col_node_shape.selectbox('Shape', label_visibility='collapsed', options=['square', 'elipse', 'container'])
         col_node_add.button('add', on_click=add_node, use_container_width=True)
         
         col_node_selected, col_node_remove = st.columns([4.5, 1.47])
