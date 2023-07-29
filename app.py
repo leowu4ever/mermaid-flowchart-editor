@@ -5,7 +5,6 @@ def add_node():
     if st.session_state['node_title'].replace(' ', '') != '':
         st.session_state['nodes'][st.session_state['node_title'].replace(' ', '_')] = st.session_state['node_title']
         st.session_state['node_title'] = ''
-        st.balloons()
         update_code()
     else:
         st.error('Node title is invalid.')
@@ -33,10 +32,16 @@ def remove_edge():
                 del st.session_state['edges'][st.session_state['node_a']]
             update_code()
         else:
-            st.error('The edge doesn\'t exist')  
+            st.error('The edge doesn\'t exist')
     else:
         st.error('The edge doesn\'t exist')
         
+def group_nodes():
+    pass
+
+def ungroup_nodes():
+    pass
+
     
 def update_code():
     st.session_state['code'] = 'flowchart'
@@ -59,14 +64,15 @@ if __name__ == '__main__':
     if 'edges' not in st.session_state:
         st.session_state['edges'] = {}
             
-    if 'subgraphs' not in st.session_state:
-        st.session_state['subgraphs'] = {}
+    if 'groups' not in st.session_state:
+        st.session_state['groups'] = {}
         
     st.set_page_config(layout='wide')
+    st.title('Mermaid flow chart editor')
+    st.write('Create Mermaid flow charts in a more manageable and efficient way.')
+        
     col_config, col_display, col_code = st.columns([2.5,3,2])
     with col_config:
-        st.header('Mermaid flow chart editor')
-        st.write('Create Mermaid flow charts in a more manageable and efficient way.')
         st.subheader('Node')
         col_node_title, col_node_shape, col_node_add = st.columns([3,1.5, 1.5])
         col_node_title.text_input(label='', placeholder='node title', label_visibility='collapsed', on_change=add_node, key='node_title')
@@ -87,9 +93,14 @@ if __name__ == '__main__':
         col_edge_remove.button('remove an edge', use_container_width=True, on_click=remove_edge)
         
         st.subheader('Group')
-        col_group_selected, col_group_create = st.columns([4.5,1.5])        
-        col_group_selected.multiselect('All nodes added', options=st.session_state['nodes'], label_visibility='collapsed')
+        st.multiselect('All nodes added', options=st.session_state['nodes'], label_visibility='collapsed')
+        col_group_name, col_group_create = st.columns([1,1])
+        col_group_name.text_input('group name', label_visibility='collapsed', placeholder='group name')
         col_group_create.button('group', use_container_width=True)
+        
+        col_group_selected, col_group_ungroup = st.columns([1,1])
+        col_group_selected.selectbox('', st.session_state['groups'].keys(), label_visibility='collapsed')
+        col_group_ungroup.button('ungroup', use_container_width=True)
         
     with col_display:
         if st.session_state['code'] != '':
@@ -99,3 +110,4 @@ if __name__ == '__main__':
         st.code(st.session_state['code'], language='mermaid', line_numbers=True)
     st.write(st.session_state['nodes'])
     st.write(st.session_state['edges'])
+    st.write(st.session_state['groups'])
