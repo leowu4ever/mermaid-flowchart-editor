@@ -37,11 +37,11 @@ def remove_edge():
         st.error('The edge doesn\'t exist')
         
 def group_nodes():
-    pass
+    st.session_state['groups'][st.session_state['group_name']] = set(st.session_state['group_nodes'])
 
 def ungroup_nodes():
-    pass
-
+    if st.session_state['group_selected'] in st.session_state['groups'].keys():
+        del st.session_state['groups'][st.session_state['group_selected']]
     
 def update_code():
     st.session_state['code'] = 'flowchart'
@@ -54,6 +54,7 @@ def update_code():
         for node_a, node_bs in st.session_state['edges'].items():
             for node_b in node_bs:
                 st.session_state['code'] += f'\n{node_a}-->{node_b}'
+    
             
 if __name__ == '__main__':
     if 'code' not in st.session_state:
@@ -93,14 +94,14 @@ if __name__ == '__main__':
         col_edge_remove.button('remove an edge', use_container_width=True, on_click=remove_edge)
         
         st.subheader('Group')
-        st.multiselect('All nodes added', options=st.session_state['nodes'], label_visibility='collapsed')
+        st.multiselect('All nodes added', options=st.session_state['nodes'], label_visibility='collapsed', key='group_nodes')
         col_group_name, col_group_create = st.columns([1,1])
-        col_group_name.text_input('group name', label_visibility='collapsed', placeholder='group name')
-        col_group_create.button('group', use_container_width=True)
+        col_group_name.text_input('group name', label_visibility='collapsed', placeholder='group name', key='group_name')
+        col_group_create.button('group', use_container_width=True, on_click=group_nodes)
         
         col_group_selected, col_group_ungroup = st.columns([1,1])
-        col_group_selected.selectbox('', st.session_state['groups'].keys(), label_visibility='collapsed')
-        col_group_ungroup.button('ungroup', use_container_width=True)
+        col_group_selected.selectbox('', st.session_state['groups'].keys(), label_visibility='collapsed', key='group_selected')
+        col_group_ungroup.button('ungroup', use_container_width=True, on_click=ungroup_nodes)
         
     with col_display:
         if st.session_state['code'] != '':
