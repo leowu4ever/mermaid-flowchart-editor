@@ -38,19 +38,24 @@ if __name__ == '__main__':
         
     st.set_page_config(layout='wide')
     st.title('Mermaid flow chart editor')
-    st.write('Help you create Mermaid flow charts in a more manageable and efficient way!')
+    st.write('Help you create Mermaid flow charts in a more manageable and efficient way.')
     col_config, col_display, col_code = st.columns([2,3,2])
     with col_config:
         st.subheader('Node')
         col_node_title, col_node_shape = st.columns([3,1])
-        col_node_title.text_input('Node title', placeholder='don\'t repeat node title ', on_change=add_node, key='node_title')
-        col_node_shape.selectbox('shape', options=['square', 'round', 'container'])
+        col_node_title.text_input('Title', placeholder='Don\'t repeat node title!', on_change=add_node, key='node_title')
+        col_node_shape.selectbox('Shape', options=['square', 'round', 'container'])
         st.button('add a new node', on_click=add_node, use_container_width=True)
         st.selectbox('All nodes added', list(st.session_state['nodes'].values())[::-1], key='node_remove_selected')
-        st.button('remove an existing node', on_click=remove_node, use_container_width=True)
+        st.button('remove the node selected', on_click=remove_node, use_container_width=True)
 
         st.subheader('Edge')
+        col_node_a, col_node_b = st.columns(2)
+        col_node_a.selectbox('Node A', [])
+        col_node_b.selectbox('Node B', [])
+        st.button('Add an edge from node A to node B    ', use_container_width=True) 
         st.subheader('Group')
+        
         
     with col_display:
         st_mermaid(st.session_state['code'], height=500)
