@@ -93,6 +93,12 @@ def get_all_edges():
         for node_b in node_bs:
             edges.append(f'{node_a} --> {node_b}')
     return edges
+
+def set_direction():
+    pass
+
+def set_theme():
+    pass
      
 if __name__ == '__main__':
     # init session state
@@ -106,11 +112,27 @@ if __name__ == '__main__':
         st.session_state['groups'] = {}
     if 'shapes' not in st.session_state:
         st.session_state['shapes'] = {}
-        
+    if 'notes' not in st.session_state:
+        st.session_state['notes'] = {}
+
     st.set_page_config(layout='wide')
-    st.title('Mermaid flow chart editor')
-    st.write('Create Mermaid flow charts in a more manageable and efficient way.')
-        
+    # tab area
+    with st.sidebar:
+        st.markdown('''
+                    # Mermaid flow chart editor                    
+                    Help you create Mermaid flow charts in a more manageable and efficient way.
+                    
+                    *Developed by Leo Wu*
+
+                    ## Quick start
+                    A flow chart has two fundamental elements, nodes and edges which can be created in the corresponding tab on the right.
+                    Any number of nodes can be grouped to form a subgraph. An edge can connect a node with another node or group of nodes.
+                    
+                    ''' )
+        st.subheader('Experimental features')
+        st.checkbox(':smiling_imp: I want some fun!!!')
+        st.checkbox(':turtle: I feel lazy?!?!')
+    # main area
     col_config, col_display, col_code = st.columns([2,3,2])
     with col_config:
         
@@ -131,6 +153,7 @@ if __name__ == '__main__':
             col_node_a, col_node_b = st.columns(2)
             col_node_a.selectbox('A (node/group)', options=st.session_state['nodes'], key='node_a')
             col_node_b.selectbox('B (node/group)', options=st.session_state['nodes'], key='node_b')
+            st.text_input('Edge note', placeholder='Can leave as blank')
             st.button('add an edge from A to B', use_container_width=True, on_click=add_edge)
             # edge - remove
             st.selectbox('Select an edge to remove', get_all_edges(), placeholder=' ')
