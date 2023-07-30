@@ -48,8 +48,8 @@ if __name__ == '__main__':
             col_node_shape.selectbox('Node shape', options=['rectangle', 'ellipse', 'container'], key='node_shape')
             # st.button('add a new node', on_click=add_node, use_container_width=True)
             # node - remove
-            st.selectbox('Select a node to remove', list(st.session_state['nodes'].values())[::-1], key='node_remove_selected')
-            st.button('remove an existing node', on_click=remove_node, use_container_width=True)
+            st.selectbox('Select a node to remove', get_all_nodes(), key='node_remove_selected')
+            st.button('remove the selected node', on_click=remove_node, use_container_width=True)
 
             # edge - add
             st.divider()

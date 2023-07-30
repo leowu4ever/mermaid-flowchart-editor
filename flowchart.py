@@ -91,8 +91,12 @@ def get_all_edges():
     for node_a, node_bs in st.session_state['edges'].items():
         for node_b in node_bs:
             edges.append(f'{node_a} --> {node_b}')
-    return edges
+    return sorted(edges) if edges != [] else ['']
 
+def get_all_nodes():
+    nodes = sorted(list(st.session_state['nodes'].values()))
+    return nodes if nodes != [] else ['']
+    
 def set_direction():
     pass
 
