@@ -65,7 +65,7 @@ def update_code():
         for group, titles in st.session_state['groups'].items():
             st.session_state['code'] += f'\nsubgraph {group}'
             for title in titles:
-                if st.session_state['shapes'][title] == 'square':
+                if st.session_state['shapes'][title] == 'rectangle':
                     st.session_state['code'] += f"\n{title.replace(' ', '_')}[{title}]"
                 if st.session_state['shapes'][title] == 'ellipse':
                     st.session_state['code'] += f"\n{title.replace(' ', '_')}([{title}])"
@@ -75,7 +75,7 @@ def update_code():
 
         # update nodes
         for node_id, node_title in st.session_state['nodes'].items():
-                if st.session_state['shapes'][node_title] == 'square':
+                if st.session_state['shapes'][node_title] == 'rectangle':
                     st.session_state['code'] += f"\n{node_title.replace(' ', '_')}[{node_title}]"
                 if st.session_state['shapes'][node_title] == 'ellipse':
                     st.session_state['code'] += f"\n{node_title.replace(' ', '_')}([{node_title}])"
@@ -87,7 +87,13 @@ def update_code():
             for node_b in node_bs:
                 st.session_state['code'] += f'\n{node_a}-->{node_b}'
         
-            
+def get_all_edges():
+    edges = []
+    for node_a, node_bs in st.session_state['edges'].items():
+        for node_b in node_bs:
+            edges.append(f'{node_a} --> {node_b}')
+    return edges
+     
 if __name__ == '__main__':
     # init session state
     if 'code' not in st.session_state:
@@ -113,8 +119,8 @@ if __name__ == '__main__':
         with tab_node:
             # node - add
             col_node_title, col_node_shape = st.columns([3,1])
-            col_node_title.text_input(label='Node title', key='node_title')
-            col_node_shape.selectbox('Node shape', options=['square', 'ellipse', 'container'], key='node_shape')
+            col_node_title.text_input(label='Node title', key='node_title', on_change=add_node)
+            col_node_shape.selectbox('Node shape', options=['rectangle', 'ellipse', 'container'], key='node_shape')
             st.button('add a new node', on_click=add_node, use_container_width=True)
             # node - remove
             st.selectbox('Select a node to remove', list(st.session_state['nodes'].values())[::-1], key='node_remove_selected')
@@ -127,7 +133,7 @@ if __name__ == '__main__':
             col_node_b.selectbox('B (node/group)', options=st.session_state['nodes'], key='node_b')
             st.button('add an edge from A to B', use_container_width=True, on_click=add_edge)
             # edge - remove
-            st.selectbox('Select an edge to remove', st.session_state['edges'].items(), placeholder=' ')
+            st.selectbox('Select an edge to remove', get_all_edges(), placeholder=' ')
             st.button('remove an existing edge', use_container_width=True, on_click=remove_edge)
             
         with tab_group:
