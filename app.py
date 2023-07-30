@@ -122,7 +122,7 @@ if __name__ == '__main__':
                     # Mermaid flow chart editor                    
                     Help you create Mermaid flow charts in a more manageable and efficient way.
                     
-                    *Developed by Leo Wu*
+                    *Developed by Leo Wu* :muscle:
 
                     ## Quick start
                     A flow chart has two fundamental elements, nodes and edges which can be created in the corresponding tab on the right.
