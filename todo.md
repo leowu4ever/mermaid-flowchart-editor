@@ -10,3 +10,6 @@ TODO Tasks
 - chart theme
 - fun mode
 - restructure flowchart and code area
+- File "/mount/src/mermaid-visual-editor/flowchart.py", line 66, in update_code
+    if st.session_state['shapes'][title] == 'rectangle':
+- download flowchart
