@@ -21,7 +21,7 @@ if __name__ == '__main__':
     # tab area
     with st.sidebar:
         st.markdown('''
-                    # Mermaid flow chart editor  :mermaid:                   
+                    # Mermaid flow chart editor                  
                     *Help you create Mermaid flow charts in a more manageable and efficient way.*
                     
                     **:heart: Developed by Leo Wu :heart:** 
@@ -30,37 +30,42 @@ if __name__ == '__main__':
                     A flow chart has two fundamental elements, nodes and edges which can be created in the corresponding tab on the right.
                     Any number of nodes can be grouped to form a subgraph. An edge can connect a node with another node or group of nodes.
                     
+                    ## Experimental features 
                     ''' )
-        st.subheader('Experimental features')
         st.checkbox(':smiling_imp: I want some fun!!!')
         st.checkbox(':turtle: I feel lazy today...')
     # main area
     col_config, col_display, col_code = st.columns([2,3,2])
+    
     with col_config:
-        
-        tab_node, tab_edge, tab_group, tab_config = st.tabs(['Node', 'Edge', 'Group', 'Configuration'])
+        tab_all, tab_group, tab_config = st.tabs(['Main', 'Group', 'Configuration'])
 
-        with tab_node:
+        with tab_all:
             # node - add
-            col_node_title, col_node_shape = st.columns([3,1])
-            col_node_title.text_input(label='Node title', key='node_title', on_change=add_node)
+            st.subheader('Nodes')
+            col_node_title, col_node_shape = st.columns([3,2])
+            col_node_title.text_input(label='Node title', key='node_title', on_change=add_node, placeholder='Press enter to add it.')
             col_node_shape.selectbox('Node shape', options=['rectangle', 'ellipse', 'container'], key='node_shape')
-            st.button('add a new node', on_click=add_node, use_container_width=True)
+            # st.button('add a new node', on_click=add_node, use_container_width=True)
             # node - remove
             st.selectbox('Select a node to remove', list(st.session_state['nodes'].values())[::-1], key='node_remove_selected')
             st.button('remove an existing node', on_click=remove_node, use_container_width=True)
 
-        with tab_edge:
             # edge - add
+            st.divider()
+            st.subheader('Edges')
             col_node_a, col_node_b = st.columns(2)
             col_node_a.selectbox('A (node/group)', options=st.session_state['nodes'], key='node_a')
             col_node_b.selectbox('B (node/group)', options=st.session_state['nodes'], key='node_b')
-            st.text_input('Edge note', placeholder='Can leave as blank')
+            col_edge_note, col_edge_type = st.columns(2)
+            col_edge_note.text_input('Edge note', placeholder='Can leave as blank')
+            col_edge_type.selectbox('Edge type', ['---'])
+
             st.button('add an edge from A to B', use_container_width=True, on_click=add_edge)
             # edge - remove
             st.selectbox('Select an edge to remove', get_all_edges(), placeholder=' ')
             st.button('remove an existing edge', use_container_width=True, on_click=remove_edge)
-            
+        
         with tab_group:
             # group - add
             st.multiselect('Select one/multiple node(s) to group', options=st.session_state['nodes'], key='group_nodes')
@@ -74,9 +79,8 @@ if __name__ == '__main__':
             
         with tab_config:
             # config
-            col_direction, col_theme = st.columns(2)
-            col_direction.selectbox('Chart direction', ['From left to right', 'from top to bottom'])
-            col_theme.selectbox('Chart theme', ['base', 'forest', 'dark'])
+            st.selectbox('Chart direction', ['From left to right', 'from top to bottom'])
+            st.selectbox('Chart theme', ['base', 'forest', 'dark'])
         
         
     with col_display:
