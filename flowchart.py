@@ -29,7 +29,6 @@ def add_edge():
         st.session_state['edges'][st.session_state['node_a']].add(st.session_state['node_b'])
     else:
         st.session_state['edges'][st.session_state['node_a']] = {st.session_state['node_b']}
-    print(st.session_state['edges'])
     update_code()
     
 def remove_edge():
