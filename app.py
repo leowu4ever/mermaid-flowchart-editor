@@ -21,13 +21,13 @@ if __name__ == '__main__':
     # tab area
     with st.sidebar:
         st.markdown('''
-                    # Mermaid flow chart editor                  
-                    *Help you create Mermaid flow charts in a more manageable and efficient way.*
+                    # Mermaid flowchart editor                  
+                    *Help you create Mermaid flowcharts in a more manageable and efficient way.*
                     
                     **:heart: Developed by Leo Wu :heart:** 
 
                     ## Quick start
-                    A flow chart has two fundamental elements, nodes and edges which can be created in the corresponding tab on the right.
+                    A flowchart has two fundamental elements, nodes and edges which can be created in the corresponding tab on the right.
                     Any number of nodes can be grouped to form a subgraph. An edge can connect a node with another node or group of nodes.
                     
                     ## Experimental features 
