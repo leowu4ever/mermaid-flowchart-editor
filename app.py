@@ -44,7 +44,8 @@ if __name__ == '__main__':
             # node - add
             st.subheader('Nodes')
             col_node_title, col_node_shape = st.columns([3,2])
-            col_node_title.text_input(label='Node title', key='node_title', on_change=add_node, placeholder='Press enter to add it.')
+            col_node_title.text_input(label='Node title', key='node_title')
+            st.button('add a new node', on_click=add_node, use_container_width=True)
             col_node_shape.selectbox('Node shape', options=['rectangle', 'ellipse', 'container'], key='node_shape')
             # st.button('add a new node', on_click=add_node, use_container_width=True)
             # node - remove
@@ -55,15 +56,15 @@ if __name__ == '__main__':
             st.divider()
             st.subheader('Edges')
             col_node_a, col_node_b = st.columns(2)
-            col_node_a.selectbox('A (node/group)', options=st.session_state['nodes'], key='node_a')
-            col_node_b.selectbox('B (node/group)', options=st.session_state['nodes'], key='node_b')
+            col_node_a.selectbox('A (node/group)', options=get_all_nodes(), key='node_a')
+            col_node_b.selectbox('B (node/group)', options=get_all_nodes()  , key='node_b')
             col_edge_note, col_edge_type = st.columns(2)
             col_edge_note.text_input('Edge note', placeholder='Can leave as blank')
             col_edge_type.selectbox('Edge type', ['---'])
 
             st.button('add an edge from A to B', use_container_width=True, on_click=add_edge)
             # edge - remove
-            st.selectbox('Select an edge to remove', get_all_edges(), placeholder=' ')
+            st.selectbox('Select an edge to remove', get_all_edges(), key='edge_remove')
             st.button('remove an existing edge', use_container_width=True, on_click=remove_edge)
         
         with tab_group:
@@ -89,7 +90,13 @@ if __name__ == '__main__':
 
     with col_code:
         st.code(st.session_state['code'], language='mermaid', line_numbers=True)
+        st.write('nodes')
         st.write(st.session_state['nodes'])
+        st.write('edge')
         st.write(st.session_state['edges'])
+        st.write('groups')
         st.write(st.session_state['groups'])
+        st.write('shapes')
         st.write(st.session_state['shapes'])
+        st.write('notes')
+        st.write(st.session_state['notes'])

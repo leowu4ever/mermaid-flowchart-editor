@@ -19,29 +19,38 @@ def remove_node():
         del st.session_state['nodes'][st.session_state['node_remove_selected'].replace(' ', '_')]
         del st.session_state['shapes'][st.session_state['node_remove_selected']]
 
-        st.toast('Node removed successfully', icon='🔥')
+        st.toast('Node removed successfully!', icon='🔥')
         update_code()
     else:
         st.toast('No node is selected.', icon='🚨')
         
 def add_edge():
-    if st.session_state['node_a'] in st.session_state['edges'].keys():
-        st.session_state['edges'][st.session_state['node_a']].add(st.session_state['node_b'])
-    else:
-        st.session_state['edges'][st.session_state['node_a']] = {st.session_state['node_b']}
-    update_code()
-    
-def remove_edge():
-    if st.session_state['node_a'] in st.session_state['edges'].keys():
-        if st.session_state['node_b'] in st.session_state['edges'][st.session_state['node_a']]:
-            st.session_state['edges'][st.session_state['node_a']].remove(st.session_state['node_b'])
-            if not st.session_state['edges'][st.session_state['node_a']]:
-                del st.session_state['edges'][st.session_state['node_a']]
+    # if node a already has seme edges
+    if st.session_state['node_a'].replace(' ', '_') in st.session_state['edges'].keys():
+        # if the pair is already added before
+        if st.session_state['node_b'].replace(' ', '_') not in st.session_state['edges'][st.session_state['node_a'].replace(' ', '_')]:
+            st.session_state['edges'][st.session_state['node_a'].replace(' ', '_')].add(st.session_state['node_b'].replace(' ', '_'))
             update_code()
         else:
-            st.error('The edge doesn\'t exist')
+            st.toast('The edge is already added.', icon='🚨')
+    # if node a doesn't have any edges
     else:
-        st.error('The edge doesn\'t exist')
+        st.session_state['edges'][st.session_state['node_a'].replace(' ', '_')] = {st.session_state['node_b'].replace(' ', '_')}
+        update_code()
+
+def remove_edge():
+    # remove the edge 
+    if st.session_state['edge_remove'] != '':
+        node_a, node_b = st.session_state['edge_remove'].split(' --> ')
+        st.session_state['edges'][node_a.replace(' ', '_')].remove(node_b.replace(' ', '_'))
+        
+        # see if node a still have any connecting nodes left
+        if len(st.session_state['edges'][node_a.replace(' ', '_')]) == 0:
+            del st.session_state['edges'][node_a.replace(' ', '_')]
+        update_code()
+    else:
+        st.toast('No edge is selected.', icon='🚨')
+
         
 def group_nodes():
     st.session_state['groups'][st.session_state['group_name']] = set(st.session_state['group_nodes'])
@@ -89,7 +98,7 @@ def get_all_edges():
     edges = []
     for node_a, node_bs in st.session_state['edges'].items():
         for node_b in node_bs:
-            edges.append(f'{node_a} --> {node_b}')
+            edges.append(f"{node_a.replace('_', ' ')} --> {node_b.replace('_', ' ')}")
     return sorted(edges) if edges != [] else ['']
 
 def get_all_nodes():
