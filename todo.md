@@ -1,6 +1,5 @@
 TODO Tasks
 - edge note
-- edge type
 - remove a node and all its edges
 - render group properly
 - remove a node from a group

@@ -4,7 +4,7 @@ def add_node():
     if st.session_state['node_title'].replace(' ', '') != '':
         if st.session_state['node_title'].replace(' ', '') not in st.session_state['nodes'].values():
             st.session_state['nodes'][st.session_state['node_title'].replace(' ', '_')] = st.session_state['node_title']
-            st.session_state['shapes'][st.session_state['node_title']] = st.session_state['node_shape']
+            st.session_state['shapes'][st.session_state['node_title'].replace(' ', '_')] = st.session_state['node_shape']
             st.session_state['node_title'] = ''
             st.toast('Node added successfully', icon='🔥')
             update_code()
@@ -17,7 +17,7 @@ def add_node():
 def remove_node():
     if len(st.session_state['nodes'].items()) > 0:
         del st.session_state['nodes'][st.session_state['node_remove_selected'].replace(' ', '_')]
-        del st.session_state['shapes'][st.session_state['node_remove_selected']]
+        del st.session_state['shapes'][st.session_state['node_remove_selected'].replace(' ', '_')]
 
         st.toast('Node removed successfully!', icon='🔥')
         update_code()
@@ -25,17 +25,21 @@ def remove_node():
         st.toast('No node is selected.', icon='🚨')
         
 def add_edge():
-    # if node a already has seme edges
+    # if node a already has seme edges, we extend the node b set
     if st.session_state['node_a'].replace(' ', '_') in st.session_state['edges'].keys():
         # if the pair is already added before
         if st.session_state['node_b'].replace(' ', '_') not in st.session_state['edges'][st.session_state['node_a'].replace(' ', '_')]:
             st.session_state['edges'][st.session_state['node_a'].replace(' ', '_')].add(st.session_state['node_b'].replace(' ', '_'))
+            st.session_state['notes'][st.session_state['node_a'].replace(' ', '_')] = {st.session_state['node_b'].replace(' ', '_') : st.session_state['edge_note']}
+            st.toast('Edge added successfully', icon='🔥')
             update_code()
         else:
             st.toast('The edge is already added.', icon='🚨')
-    # if node a doesn't have any edges
+    # if node a doesn't have any edges, we create a new set to contain node b
     else:
         st.session_state['edges'][st.session_state['node_a'].replace(' ', '_')] = {st.session_state['node_b'].replace(' ', '_')}
+        st.session_state['notes'][st.session_state['node_a'].replace(' ', '_')] = {st.session_state['node_b'].replace(' ', '_') : st.session_state['edge_note']}
+        st.toast('Edge added successfully', icon='🔥')
         update_code()
 
 def remove_edge():
@@ -47,6 +51,9 @@ def remove_edge():
         # see if node a still have any connecting nodes left
         if len(st.session_state['edges'][node_a.replace(' ', '_')]) == 0:
             del st.session_state['edges'][node_a.replace(' ', '_')]
+            
+        # remove its notes too
+        del st.session_state['notes'][node_a.replace(' ', '_')]
         update_code()
     else:
         st.toast('No edge is selected.', icon='🚨')
@@ -82,17 +89,23 @@ def update_code():
 
         # update nodes
         for node_id, node_title in st.session_state['nodes'].items():
-                if st.session_state['shapes'][node_title] == 'rectangle':
+                if st.session_state['shapes'][node_title.replace(' ', '_')] == 'rectangle':
                     st.session_state['code'] += f"\n{node_title.replace(' ', '_')}[{node_title}]"
-                if st.session_state['shapes'][node_title] == 'ellipse':
+                if st.session_state['shapes'][node_title.replace(' ', '_')] == 'ellipse':
                     st.session_state['code'] += f"\n{node_title.replace(' ', '_')}([{node_title}])"
-                if st.session_state['shapes'][node_title] == 'container':
+                if st.session_state['shapes'][node_title.replace(' ', '_')] == 'container':
                     st.session_state['code'] += f"\n{node_title.replace(' ', '_')}[({node_title})]"
             
         # update edges
         for node_a, node_bs in st.session_state['edges'].items():
             for node_b in node_bs:
-                st.session_state['code'] += f'\n{node_a}-->{node_b}'
+                note = st.session_state['notes'][node_a.replace(' ', '_')][node_b.replace(' ', '_')]
+                # see if there an edge note attached
+                if note == '':
+                    st.session_state['code'] += f'\n{node_a}-->{node_b}'
+                else:
+                    st.session_state['code'] += f'\n{node_a}--{note}-->{node_b}'
+
         
 def get_all_edges():
     edges = []
