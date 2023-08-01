@@ -73,7 +73,7 @@ def ungroup_nodes():
 def update_code():
     theme = f"%%{{init: {{'theme':'{st.session_state['theme']}'}}}}%%"
 
-    direction_map = {'From left to right': 'TB', 'From top to bottom': 'LR'}
+    direction_map = {'From left to right': 'LR', 'From top to bottom': 'TB'}
     direction = direction_map[st.session_state['chart_direction']]
     st.session_state['code'] = f"{theme}\nflowchart {direction}\n"
 
