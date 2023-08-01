@@ -35,7 +35,7 @@ if __name__ == '__main__':
         st.checkbox(':smiling_imp: I want some fun!!!')
         st.checkbox(':turtle: I feel lazy today...')
     # main area
-    col_config, col_display, col_code = st.columns([2,3,2])
+    col_config, col_display, col_code = st.columns([3,3,2])
     
     with col_config:
         tab_all, tab_group, tab_config = st.tabs(['Main', 'Group', 'Configuration'])
