@@ -69,12 +69,13 @@ def ungroup_nodes():
     update_code()
 
 def update_code():
-    st.session_state['code'] = '''
-                               flowchart
-                               '''
+    theme = f"%%{{init: {{'theme':'{st.session_state['theme']}'}}}}%%"
+
+    direction_map = {'From left to right': 'TB', 'From top to bottom': 'LR'}
+    direction = direction_map[st.session_state['chart_direction']]
+    st.session_state['code'] = f"{theme}\nflowchart {direction}\n"
 
     if len(st.session_state['nodes'].items()) > 0:
-        st.session_state['code'] = 'flowchart'
         # update group
         for group, titles in st.session_state['groups'].items():
             st.session_state['code'] += f'\nsubgraph {group}'
@@ -119,7 +120,7 @@ def get_all_nodes():
     return nodes if nodes != [] else ['']
     
 def set_direction():
-    pass
-
+    update_code()
+    
 def set_theme():
-    pass
+    update_code()

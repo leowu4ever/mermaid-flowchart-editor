@@ -70,7 +70,7 @@ if __name__ == '__main__':
             st.multiselect('Select one/multiple node(s) to group', options=st.session_state['nodes'], key='group_nodes')
             col_group_name, col_group_direction = st.columns([1,1])
             col_group_name.text_input('Group name', key='group_name')
-            col_group_direction.selectbox('Group direction', ['From left to right', 'from top to bottom'])
+            col_group_direction.selectbox('Group direction', ['From left to right', 'From top to bottom'])
             st.button('group', use_container_width=True, on_click=group_nodes)
             # group - remove
             st.selectbox('Select a group to ungroup', st.session_state['groups'].keys(), key='group_selected')
@@ -78,9 +78,8 @@ if __name__ == '__main__':
             
         with tab_config:
             # config
-            st.selectbox('Chart direction', ['From left to right', 'from top to bottom'])
-            st.selectbox('Chart theme', ['base', 'forest', 'dark'])
-        
+            st.selectbox('Chart direction', ['From left to right', 'From top to bottom'], key='chart_direction', on_change=set_direction)
+            st.selectbox('Chart theme', ['default', 'neutral', 'base', 'forest', 'dark'], key='theme', on_change=set_theme())
         
     with col_display:
         if st.session_state['code'] != '':
