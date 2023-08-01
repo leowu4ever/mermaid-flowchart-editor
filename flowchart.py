@@ -32,6 +32,7 @@ def add_edge():
             st.session_state['edges'][st.session_state['node_a'].replace(' ', '_')].add(st.session_state['node_b'].replace(' ', '_'))
             st.session_state['notes'][st.session_state['node_a'].replace(' ', '_')] = {st.session_state['node_b'].replace(' ', '_') : st.session_state['edge_note']}
             st.toast('Edge added successfully', icon='🔥')
+            st.session_state['edge_note'] = ''
             update_code()
         else:
             st.toast('The edge is already added.', icon='🚨')
@@ -40,6 +41,7 @@ def add_edge():
         st.session_state['edges'][st.session_state['node_a'].replace(' ', '_')] = {st.session_state['node_b'].replace(' ', '_')}
         st.session_state['notes'][st.session_state['node_a'].replace(' ', '_')] = {st.session_state['node_b'].replace(' ', '_') : st.session_state['edge_note']}
         st.toast('Edge added successfully', icon='🔥')
+        st.session_state['edge_note'] = ''
         update_code()
 
 def remove_edge():
