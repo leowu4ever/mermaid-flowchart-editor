@@ -79,7 +79,7 @@ if __name__ == '__main__':
         with tab_config:
             # config
             st.selectbox('Chart direction', ['From left to right', 'From top to bottom'], key='chart_direction', on_change=set_direction)
-            st.selectbox('Chart theme', ['default', 'neutral', 'base', 'forest', 'dark'], key='theme', on_change=set_theme())
+            st.selectbox('Chart theme', ['default', 'neutral', 'base', 'forest', 'dark'], key='theme', on_change=set_theme)
         
     with col_display:
         if st.session_state['code'] != '':
