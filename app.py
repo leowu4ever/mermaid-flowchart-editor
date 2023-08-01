@@ -52,7 +52,7 @@ if __name__ == '__main__':
     col_config, col_display, col_code = st.columns([3,3,2])
     
     with col_config:
-        tab_all, tab_group, tab_config, tab_code = st.tabs(['💻 Main', '🍪 Group', '🚀 Configuration', '👓 Show me the code!!!'])
+        tab_all, tab_group, tab_config, tab_code = st.tabs(['💻 Main', '🍪 Group', '🚀 Configuration', '🌠 Show me the code!!!'])
 
         with tab_all:
             # node - add
