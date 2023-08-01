@@ -20,6 +20,7 @@ if __name__ == '__main__':
     st.set_page_config(layout='wide')
     # tab area
     with st.sidebar:
+
         st.markdown('''
                     # Mermaid flowchart editor                  
                     *Help you create Mermaid flowcharts in a more manageable and efficient way.*
@@ -30,6 +31,20 @@ if __name__ == '__main__':
                     A flowchart has two fundamental elements, nodes and edges which can be created in the corresponding tab on the right.
                     Any number of nodes can be grouped to form a subgraph. An edge can connect a node with another node or group of nodes.
                     
+                    ''' )
+
+        tab_mermaid = '''
+                         flowchart
+                         subgraph I'm a group
+                         node1[I'm node 1]
+                         node2[(I'm node 2)]
+                         node1--I'm an edge-->node2
+                         node2-->node2
+                         end
+                      '''
+        st_mermaid(tab_mermaid, height=180)
+        st.code(tab_mermaid, language='mermaid', line_numbers=True)
+        st.markdown('''
                     ## Experimental features 
                     ''' )
         st.checkbox(':smiling_imp: I want some fun!!!')
