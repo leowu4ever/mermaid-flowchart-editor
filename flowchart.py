@@ -71,7 +71,7 @@ def ungroup_nodes():
     update_code()
 
 def update_code():
-    theme = f"%%{{init: {{'theme':'{st.session_state['theme']}'}}}}%%"
+    theme = f"%%{{init: {{'theme':'{st.session_state['theme'].lower()}'}}}}%%"
 
     direction_map = {'From left to right': 'LR', 'From top to bottom': 'TB'}
     direction = direction_map[st.session_state['chart_direction']]
