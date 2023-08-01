@@ -53,7 +53,7 @@ if __name__ == '__main__':
     col_config, col_display, col_code = st.columns([3,3,2])
     
     with col_config:
-        tab_all, tab_group, tab_config = st.tabs(['Main', 'Group', 'Configuration'])
+        tab_all, tab_group, tab_config, tab_code = st.tabs(['💻 Main', '📐 Group', '🔧 Configuration', '🚀 Show me the code!!!'])
 
         with tab_all:
             # node - add
@@ -96,9 +96,13 @@ if __name__ == '__main__':
             st.selectbox('Chart direction', ['From left to right', 'From top to bottom'], key='chart_direction', on_change=set_direction)
             st.selectbox('Chart theme', ['Default', 'Neutral', 'Base', 'Forest', 'Dark'], key='theme', on_change=set_theme)
         
+        with tab_code:
+            st.code(st.session_state['code'], language='mermaid', line_numbers=True)
+
     with col_display:
         if st.session_state['code'] != '':
             st_mermaid(st.session_state['code'], height=500)
+            
 
     with col_code:
         st.code(st.session_state['code'], language='mermaid', line_numbers=True)
