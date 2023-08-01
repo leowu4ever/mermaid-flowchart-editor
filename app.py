@@ -42,8 +42,7 @@ if __name__ == '__main__':
                          node2-->node2
                          end
                       '''
-        st_mermaid(tab_mermaid, height=180)
-        st.code(tab_mermaid, language='mermaid', line_numbers=True)
+        st_mermaid(tab_mermaid, height=150)
         st.markdown('''
                     ## Experimental features 
                     ''' )
