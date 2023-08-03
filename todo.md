@@ -7,5 +7,3 @@ done chart theme
 
 - remove a node if connected
 - fun mode
-- restructure flowchart and code area
-- download flowchart
