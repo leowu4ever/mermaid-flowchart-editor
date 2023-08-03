@@ -60,8 +60,11 @@ def remove_edge():
 
         
 def group_nodes():
-    st.session_state['groups'][st.session_state['group_name']] = set(st.session_state['group_nodes'])
-    update_code()
+    if st.session_state['group_name'] != '':
+        st.session_state['groups'][st.session_state['group_name']] = set(st.session_state['group_nodes'])
+        update_code()
+    else:
+        st.toast('Please specify the group name.', icon='🚨') 
     
 def ungroup_nodes():
     if st.session_state['group_selected'] in st.session_state['groups'].keys():
@@ -80,12 +83,12 @@ def update_code():
         for group, titles in st.session_state['groups'].items():
             st.session_state['code'] += f'\nsubgraph {group}'
             for title in titles:
-                if st.session_state['shapes'][title] == 'rectangle':
-                    st.session_state['code'] += f"\n{title.replace(' ', '_')}[{title}]"
-                if st.session_state['shapes'][title] == 'ellipse':
-                    st.session_state['code'] += f"\n{title.replace(' ', '_')}([{title}])"
-                if st.session_state['shapes'][title] == 'container':
-                    st.session_state['code'] += f"\n{title.replace(' ', '_')}[({title})]"
+                if st.session_state['shapes'][title.replace(' ', '_')] == 'rectangle':
+                    st.session_state['code'] += f"\n{title}[{title}]"
+                if st.session_state['shapes'][title.replace(' ', '_')] == 'ellipse':
+                    st.session_state['code'] += f"\n{title}([{title}])"
+                if st.session_state['shapes'][title.replace(' ', '_')] == 'container':
+                    st.session_state['code'] += f"\n{title}[({title})]"
             st.session_state['code'] += '\nend'
 
         # update nodes
