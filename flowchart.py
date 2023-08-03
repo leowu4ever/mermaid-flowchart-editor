@@ -30,7 +30,7 @@ def add_edge():
         # if the pair is already added before
         if st.session_state['node_b'].replace(' ', '_') not in st.session_state['edges'][st.session_state['node_a'].replace(' ', '_')]:
             st.session_state['edges'][st.session_state['node_a'].replace(' ', '_')].add(st.session_state['node_b'].replace(' ', '_'))
-            st.session_state['notes'][st.session_state['node_a'].replace(' ', '_')] = {st.session_state['node_b'].replace(' ', '_') : st.session_state['edge_note']}
+            st.session_state['notes'][st.session_state['node_a'].replace(' ', '_')][st.session_state['node_b'].replace(' ', '_')] = st.session_state['edge_note']
             st.toast('Edge added successfully', icon='🔥')
             st.session_state['edge_note'] = ''
             update_code()
@@ -53,9 +53,7 @@ def remove_edge():
         # see if node a still have any connecting nodes left
         if len(st.session_state['edges'][node_a.replace(' ', '_')]) == 0:
             del st.session_state['edges'][node_a.replace(' ', '_')]
-            
-        # remove its notes too
-        del st.session_state['notes'][node_a.replace(' ', '_')]
+
         update_code()
     else:
         st.toast('No edge is selected.', icon='🚨')
@@ -102,7 +100,7 @@ def update_code():
         # update edges
         for node_a, node_bs in st.session_state['edges'].items():
             for node_b in node_bs:
-                note = st.session_state['notes'][node_a.replace(' ', '_')][node_b.replace(' ', '_')]
+                note = st.session_state['notes'][node_a][node_b]
                 # see if there an edge note attached
                 if note == '':
                     st.session_state['code'] += f'\n{node_a}-->{node_b}'

@@ -72,7 +72,7 @@ if __name__ == '__main__':
             col_node_a, col_node_b = st.columns(2)
             col_node_a.selectbox('A (node/group)', options=get_all_nodes(), key='node_a')
             col_node_b.selectbox('B (node/group)', options=get_all_nodes()  , key='node_b')
-            st.text_input('Edge note', placeholder='Can leave as blank', key='edge_note')
+            st.text_input('Edge note', placeholder='Can leave blank', key='edge_note')
 
             st.button('add an edge from A to B', use_container_width=True, on_click=add_edge)
             # edge - remove
