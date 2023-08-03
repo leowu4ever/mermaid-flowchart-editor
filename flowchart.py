@@ -55,21 +55,9 @@ def remove_edge():
             del st.session_state['edges'][node_a.replace(' ', '_')]
 
         update_code()
+        st.toast('Edge removed successfully', icon='🔥')
     else:
         st.toast('No edge is selected.', icon='🚨')
-
-        
-def group_nodes():
-    if st.session_state['group_name'] != '':
-        st.session_state['groups'][st.session_state['group_name']] = set(st.session_state['group_nodes'])
-        update_code()
-    else:
-        st.toast('Please specify the group name.', icon='🚨') 
-    
-def ungroup_nodes():
-    if st.session_state['group_selected'] in st.session_state['groups'].keys():
-        del st.session_state['groups'][st.session_state['group_selected']]
-    update_code()
 
 def update_code():
     theme = f"%%{{init: {{'theme':'{st.session_state['theme'].lower()}'}}}}%%"
@@ -79,26 +67,15 @@ def update_code():
     st.session_state['code'] = f"{theme}\nflowchart {direction}\n"
 
     if len(st.session_state['nodes'].items()) > 0:
-        # update group
-        for group, titles in st.session_state['groups'].items():
-            st.session_state['code'] += f'\nsubgraph {group}'
-            for title in titles:
-                if st.session_state['shapes'][title.replace(' ', '_')] == 'rectangle':
-                    st.session_state['code'] += f"\n{title}[{title}]"
-                if st.session_state['shapes'][title.replace(' ', '_')] == 'ellipse':
-                    st.session_state['code'] += f"\n{title}([{title}])"
-                if st.session_state['shapes'][title.replace(' ', '_')] == 'container':
-                    st.session_state['code'] += f"\n{title}[({title})]"
-            st.session_state['code'] += '\nend'
 
         # update nodes
         for node_id, node_title in st.session_state['nodes'].items():
                 if st.session_state['shapes'][node_title.replace(' ', '_')] == 'rectangle':
-                    st.session_state['code'] += f"\n{node_title.replace(' ', '_')}[{node_title}]"
+                    st.session_state['code'] += f"{node_title.replace(' ', '_')}[{node_title}]\n"
                 if st.session_state['shapes'][node_title.replace(' ', '_')] == 'ellipse':
-                    st.session_state['code'] += f"\n{node_title.replace(' ', '_')}([{node_title}])"
+                    st.session_state['code'] += f"{node_title.replace(' ', '_')}([{node_title}])\n"
                 if st.session_state['shapes'][node_title.replace(' ', '_')] == 'container':
-                    st.session_state['code'] += f"\n{node_title.replace(' ', '_')}[({node_title})]"
+                    st.session_state['code'] += f"{node_title.replace(' ', '_')}[({node_title})]\n"
             
         # update edges
         for node_a, node_bs in st.session_state['edges'].items():
