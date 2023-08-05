@@ -85,15 +85,3 @@ if __name__ == '__main__':
     with col_display:
         if st.session_state['code'] != '':
             st_mermaid(st.session_state['code'], height=500)
-            
-
-    # with col_code:
-    #     st.code(st.session_state['code'], language='mermaid', line_numbers=True)
-    #     st.write('nodes')
-    #     st.write(st.session_state['nodes'])
-    #     st.write('edge')
-    #     st.write(st.session_state['edges'])
-    #     st.write('shapes')
-    #     st.write(st.session_state['shapes'])
-    #     st.write('notes')
-    #     st.write(st.session_state['notes'])

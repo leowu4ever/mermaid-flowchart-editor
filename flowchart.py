@@ -19,6 +19,14 @@ def remove_node():
         del st.session_state['nodes'][st.session_state['node_remove_selected'].replace(' ', '_')]
         del st.session_state['shapes'][st.session_state['node_remove_selected'].replace(' ', '_')]
 
+        # if the node is connected? if so, there remove all relevant edges
+        if st.session_state['node_remove_selected'] in st.session_state['edges'].keys():
+            del st.session_state['edges'][st.session_state['node_remove_selected'].replace(' ', '_')]
+        else:
+            for destination_nodes in st.session_state['edges'].values():
+                if st.session_state['node_remove_selected'] in destination_nodes:
+                    destination_nodes.remove(st.session_state['node_remove_selected'])
+        
         st.toast('Node removed successfully!', icon='🔥')
         update_code()
     else:
